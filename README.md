@@ -17,4 +17,10 @@ $ pip install pipenv
 $ pipenv shell
 ```
 
-# Testing
+# Unit Tests
+
+Running
+
+```
+$ python -m unittest
+```
