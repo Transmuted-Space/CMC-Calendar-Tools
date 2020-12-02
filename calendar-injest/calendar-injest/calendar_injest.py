@@ -4,8 +4,11 @@ This is the module for the CalendarInjest tool which provides high level calenda
 '''
 
 import requests
-import sqlalchemy
+from sqlalchemy.orm import declaritive_base
 from configparser import ConfigParser
+
+
+Base = declaritive_base()
 
 
 class CalendarInjest:
@@ -18,14 +21,24 @@ class CalendarInjest:
 
 
     def export_calendar(self):
+        '''
+        This function will respond with a JSON serilization of events from the calendar.
+        '''
+
         pass
 
 
     def subscribe_to_calendar(self):
+        '''
+
+        '''
         pass
 
 
     def injest_calendar(self):
+        '''
+        This function will retrieve an HTML response from the URI and parse the DOM.
+        '''
         pass
 
 

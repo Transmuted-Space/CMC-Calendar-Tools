@@ -22,5 +22,5 @@ $ pipenv shell
 Running
 
 ```
-$ python -m unittest
+$ python -m unittest tests
 ```
