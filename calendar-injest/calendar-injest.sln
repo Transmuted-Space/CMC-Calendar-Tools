@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "calendar-injest", "calendar-injest\calendar-injest.pyproj", "{89DC9C02-4EFF-4334-BE0C-1C0C566A9C2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89DC9C02-4EFF-4334-BE0C-1C0C566A9C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89DC9C02-4EFF-4334-BE0C-1C0C566A9C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36A04CB5-E891-46DD-9AE9-481BE52FDFDE}
+	EndGlobalSection
+EndGlobal
