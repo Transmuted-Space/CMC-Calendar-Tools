@@ -1,8 +1,15 @@
 import unittest
+from calendar_injest import CalendarInjest
 
-class Test_test_1(unittest.TestCase):
-    def test_A(self):
-        self.fail("Not implemented")
+
+class Tests(unittest.TestCase):
+    def setUp(self):
+        self.test_instance = CalendarInjest()
+
+
+    def test_injest_calendar(self):
+        self.test_instance.injest_calendar()
+
 
 if __name__ == '__main__':
     unittest.main()

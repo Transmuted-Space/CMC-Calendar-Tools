@@ -19,7 +19,7 @@ $ pipenv shell
 
 # Unit Tests
 
-Running
+Running:
 
 ```
 $ python -m unittest tests
