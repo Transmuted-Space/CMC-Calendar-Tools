@@ -1,1 +1,8 @@
-*.sln
+# Visual Studio
+.sln
+
+# Node dependencies
+node_modules/
+
+# Build output
+.build/
