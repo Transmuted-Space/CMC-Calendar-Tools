@@ -1,0 +1,5 @@
+{
+  "extends": "./mocha.json",
+  "require": ["./mocha/mocha.integration.ts"],
+  "timeout": 3000
+}

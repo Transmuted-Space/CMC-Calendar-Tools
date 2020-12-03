@@ -1,1 +1,10 @@
-*.sln
+# Visual Studio
+.sln
+.vs
+.pyproj
+
+# Node dependencies
+node_modules/
+
+# TypeScript build output
+.build/
