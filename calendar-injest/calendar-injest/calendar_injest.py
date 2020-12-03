@@ -3,13 +3,10 @@
 This is the module for the CalendarInjest tool which provides high level calendar functionality via the command line.
 '''
 
+import logging
 import requests
-from sqlalchemy.orm import declarative_base
 from configparser import ConfigParser
 from html.parser import HTMLParser
-
-
-Base = declaritive_base()
 
 
 class CalendarInjest:
@@ -18,7 +15,16 @@ class CalendarInjest:
     '''
 
     def __init__(self):
-        self.config = ConfigParser()
+
+        # Configure logger to output to file.
+        logging.basicConfig(filename='calendar-injest.log')
+
+        # Load the configuration.
+        self.config_parser = ConfigParser()
+        self.config_parser.read('configuration.ini')
+
+        # Instanciate HTML parser and logger.
+        self.html_parser = HTMLParser()
 
 
     def export_calendar(self):
@@ -40,12 +46,17 @@ class CalendarInjest:
         '''
         This function will retrieve an HTML response from the URI and parse the DOM.
         '''
-        calendarUri = self.config['DEFAULT']['CalendarUri']
+
+        calendarUri = self.config_parser['DEFAULT']['calendarUri']
 
         # Send HTTP request to URI.
         response = requests.get(calendarUri)
 
         # 
+        if response.status_code == 200:
+            self.html_parser.feed(response.text)
+        else:
+            pass
 
 
 if __name__ == "__main__":
