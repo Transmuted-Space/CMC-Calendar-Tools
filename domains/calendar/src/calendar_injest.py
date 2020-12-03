@@ -4,12 +4,10 @@ This is the module for the CalendarInjest tool which provides high level calenda
 '''
 
 import requests
-from sqlalchemy.orm import declarative_base
 from configparser import ConfigParser
 from html.parser import HTMLParser
 
 
-Base = declaritive_base()
 
 
 class CalendarInjest:
@@ -45,7 +43,7 @@ class CalendarInjest:
         # Send HTTP request to URI.
         response = requests.get(calendarUri)
 
-        # 
+        #
 
 
 if __name__ == "__main__":

@@ -1,0 +1,2 @@
+def ingest():
+  return "masticate!"

@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, String, Datetime
-from calendar_injest import Base
+from sqlalchemy.orm import declarative_base
 
+Base = declaritive_base()
 
 class Subscribers(Base):
     __tablename__ = 'subscribers'
