@@ -1,5 +1,5 @@
 import unittest
-from calendar_injest import CalendarInjest
+from .calendar_injest import CalendarInjest
 
 
 class Tests(unittest.TestCase):

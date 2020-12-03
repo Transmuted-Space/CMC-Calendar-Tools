@@ -4,7 +4,7 @@ This is the module for the CalendarInjest tool which provides high level calenda
 '''
 
 import requests
-from sqlalchemy.orm import declaritive_base
+from sqlalchemy.orm import declarative_base
 from configparser import ConfigParser
 from html.parser import HTMLParser
 
