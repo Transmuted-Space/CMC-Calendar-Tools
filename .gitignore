@@ -1,5 +1,7 @@
 # Visual Studio
 .sln
+.vs
+.pyproj
 
 # Node dependencies
 node_modules/
