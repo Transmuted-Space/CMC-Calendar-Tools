@@ -67,7 +67,7 @@ class CalendarInjest:
     def __init__(self):
 
         # Configure logger to output to file.
-        logging.basicConfig(filename='calendar-injest.log')
+        logging.basicConfig(filename='calendar-ingest.log')
 
         # Load the configuration.
         self.config_parser = ConfigParser()
@@ -91,7 +91,7 @@ class CalendarInjest:
         pass
 
 
-    def injest_event_links(self, links, refresh_html_cache=False):
+    def ingest_event_links(self, links, refresh_html_cache=False):
         event_parser = EventHTMLParser()
 
         for i, link in enumerate(links):
@@ -113,14 +113,13 @@ class CalendarInjest:
                 print(event_parser.get_data())
 
 
-    def injest_calendar(self, refresh_html_cache=False):
+    def ingest_calendar(self, refresh_html_cache=False):
         '''
         This function will retrieve an HTML response from the URI and parse the DOM.
         '''
 
         calendar_parser = CalendarHTMLParser()
 
-        
         # Send HTTP request to URI.
         response = requests.get(self.calendarUri)
 
@@ -137,7 +136,7 @@ class CalendarInjest:
 
             # Retrieve events list and parse them all.
             event_links = calendar_parser.get_event_links()
-            self.injest_event_links(event_links, refresh_html_cache=refresh_html_cache)
+            self.ingest_event_links(event_links, refresh_html_cache=refresh_html_cache)
 
         elif response.status_code == 404:
             logging.error('URI not found: HTTP status code {}.'.format(response.status_code))

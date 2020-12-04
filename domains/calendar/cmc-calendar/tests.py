@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 import requests
-from .calendar_injest import CalendarInjest
+from .calendar_ingest import CalendarInjest
 
 
 class Tests(unittest.TestCase):
@@ -14,9 +14,28 @@ class Tests(unittest.TestCase):
         self.test_instance = CalendarInjest()
 
 
-    def test_injest_calendar(self):
+    def test_ingest_event_links(self):
 
-        # Recursively find HTML files in cached HTML directory.
+        # Find HTML files in cached directory.
+        cached_html_dir = dir(Path('cached_html').rglob('*.html'))
+
+        with patch('requests.get') as mock_request:
+            text = ''
+            for filename in cached_html_dir:
+                if 'event' in filename:
+                    file_handle = open(filename, 'r')
+                    text = file_handle.read()
+                    print(text)
+
+            mock_request.return_value.status_code = 200
+            mock_request.return_value.text = text
+
+            self.test_instance.ingest_event_links('', refresh_html_cache=False)
+
+
+    def test_ingest_calendar(self):
+
+        # Find HTML files in cached directory.
         cached_html_dir = dir(Path('cached_html').rglob('*.html'))
         
         # If the directory is empty then refresh the cache.
@@ -34,7 +53,7 @@ class Tests(unittest.TestCase):
             mock_request.return_value.status_code = 200
             mock_request.return_value.text = text
 
-            self.test_instance.injest_calendar(refresh_html_cache=refresh_html_cache)
+            self.test_instance.ingest_calendar(refresh_html_cache=refresh_html_cache)
 
 
 if __name__ == '__main__':
