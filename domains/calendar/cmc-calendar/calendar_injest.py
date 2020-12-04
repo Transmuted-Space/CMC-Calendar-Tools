@@ -7,10 +7,34 @@ import logging
 import requests
 from configparser import ConfigParser
 from html.parser import HTMLParser
+from datetime import date
 
 
 class EventHTMLParser(HTMLParser):
-    pass
+
+
+    def __init__(self):
+        super().__init__()
+        self.harvest_data = False
+        self.data = []
+
+
+    def get_data(self):
+        return self.data
+
+
+    def handle_data(self, data):
+        if self.harvest_data:
+            self.data.append(data)
+
+        self.harvest_data = False
+
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'span':
+            attr_dict = dict(attrs)
+            if 'id' in attr_dict and 'EventDetails' in attr_dict['id']:
+                self.harvest_data = True
 
 
 class CalendarHTMLParser(HTMLParser):
@@ -48,9 +72,8 @@ class CalendarInjest:
         # Load the configuration.
         self.config_parser = ConfigParser()
         self.config_parser.read('configuration.ini')
-
-        # Instanciate HTML parser and logger.
-        self.html_parser = CalendarHTMLParser()
+        self.calendarUri = self.config_parser['DEFAULT']['calendarUri']
+        self.eventsBaseUri = self.config_parser['DEFAULT']['eventsBaseUri']
 
 
     def export_calendar(self):
@@ -68,32 +91,53 @@ class CalendarInjest:
         pass
 
 
-    def injset_event_links(self, links):
-        for link in links:
+    def injest_event_links(self, links, refresh_html_cache=False):
+        event_parser = EventHTMLParser()
+
+        for i, link in enumerate(links):
 
             # Send HTTP request to URI.
-            response = requests.get(calendarUri + link)
+            response = requests.get(self.eventsBaseUri + link)
+
+            # Handle depending on the response code.
+            if response.status_code == 200:
+
+                # Cache the response if specified.
+                if refresh_html_cache:
+                    with open('cached_html/event-{}-{}.html'.format(i, date.today()), 'w+') as file_handle:
+                        file_handle.write(response.text)
+
+                # Parse the event page HTML.
+                event_parser.feed(response.text)
+
+                print(event_parser.get_data())
 
 
-    def injest_calendar(self):
+    def injest_calendar(self, refresh_html_cache=False):
         '''
         This function will retrieve an HTML response from the URI and parse the DOM.
         '''
 
-        calendarUri = self.config_parser['DEFAULT']['calendarUri']
+        calendar_parser = CalendarHTMLParser()
 
+        
         # Send HTTP request to URI.
-        response = requests.get(calendarUri)
+        response = requests.get(self.calendarUri)
 
         # Handle depending on the response code.
         if response.status_code == 200:
 
             # Feed the response HTML into the parser and parse.
-            self.html_parser.feed(response.text)
+            calendar_parser.feed(response.text)
+
+            # Cache the response if specified.
+            if refresh_html_cache:
+                with open('cached_html/calendar-{}.html'.format(date.today()), 'w+') as file_handle:
+                    file_handle.write(response.text)
 
             # Retrieve events list and parse them all.
-            event_links = self.html_parser.get_event_links()
-            self.injest_event_links(event_links)
+            event_links = calendar_parser.get_event_links()
+            self.injest_event_links(event_links, refresh_html_cache=refresh_html_cache)
 
         elif response.status_code == 404:
             logging.error('URI not found: HTTP status code {}.'.format(response.status_code))
