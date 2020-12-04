@@ -30,7 +30,7 @@ class Tests(unittest.TestCase):
             mock_request.return_value.status_code = 200
             mock_request.return_value.text = text
 
-            self.test_instance.ingest_event_links('', refresh_html_cache=False)
+            self.test_instance.ingest_event_links([''], refresh_html_cache=False)
 
 
     def test_ingest_calendar(self):
