@@ -1,4 +1,14 @@
+# Visual Studio
+.sln
 .vs
-*.sln
-*.log
+.pyproj
+
+# Node dependencies
+node_modules/
+
+# TypeScript build output
+.build/
+
+# Python
+*.pyc
 __pycache__

@@ -52,13 +52,10 @@ class CalendarInjest:
         # Send HTTP request to URI.
         response = requests.get(calendarUri)
 
-        # 
+        # Handle depending on the response code.
         if response.status_code == 200:
             self.html_parser.feed(response.text)
+        elif response.status_code == 404:
+            logging.error('URI not found.')
         else:
-            pass
-
-
-if __name__ == "__main__":
-    pass
-
+            logging.error('Unexpected response.')

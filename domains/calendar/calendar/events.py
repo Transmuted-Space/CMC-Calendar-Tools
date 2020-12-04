@@ -1,6 +1,9 @@
-from sqlalchemy import Integer, String, Datetime, Float
-from calendar_injest import Base
+#!/usr/bin/env python3.8
 
+from sqlalchemy import Integer, String, Datetime, Float
+from sqlalchemy.orm import declarative_base
+
+Base = declaritive_base()
 
 class Events(Base):
     __tablename__ = 'events'
