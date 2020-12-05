@@ -5,9 +5,12 @@ This is the module for the CalendarInjest tool which provides high level calenda
 
 import logging
 import requests
+import firebase_admin
+from firebase_admin import credentials, firestore
 from configparser import ConfigParser
 from html.parser import HTMLParser
 from datetime import date
+from .event import Event
 
 
 class EventHTMLParser(HTMLParser):
@@ -16,24 +19,37 @@ class EventHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
         self.harvest_data = False
-        self.data = []
+        self.label = ''
+        self.data = {}
 
 
     def get_data(self):
         return self.data
 
 
+    def sanitize_data(self, data):
+        data = data.replace('\n', '')
+        data = data.replace('\xa0', ' ')
+        return data
+
+
     def handle_data(self, data):
         if self.harvest_data:
-            self.data.append(data)
+            self.data[self.label] = self.sanitize_data(data)
 
         self.harvest_data = False
 
 
     def handle_starttag(self, tag, attrs):
+
         if tag == 'span':
             attr_dict = dict(attrs)
-            if 'id' in attr_dict and 'EventDetails' in attr_dict['id']:
+            if 'id' in attr_dict and 'EventDetails_lbl' in attr_dict['id']:
+                
+                # Parse out label name.
+                label = attr_dict['id'].replace('EventDetails_lbl', '')
+                self.label = label.replace('dnn_ctr781_', '')
+
                 self.harvest_data = True
 
 
@@ -75,6 +91,11 @@ class CalendarInjest:
         self.calendarUri = self.config_parser['DEFAULT']['calendarUri']
         self.eventsBaseUri = self.config_parser['DEFAULT']['eventsBaseUri']
 
+        # Load Firebase credentials and create client.
+        cred = credentials.Certificate('cmc-calendar-297516-firebase-adminsdk-mwugq-e33b3b9a7a.json')
+        firebase_admin.initialize_app(cred)
+        self.database = firestore.client()
+
 
     def export_calendar(self):
         '''
@@ -110,7 +131,10 @@ class CalendarInjest:
                 # Parse the event page HTML.
                 event_parser.feed(response.text)
 
-                print(event_parser.get_data())
+                data = event_parser.get_data()
+                # from pprint import pprint
+                # pprint(data)
+                self.database.collection('events').add(data)
 
 
     def ingest_calendar(self, refresh_html_cache=False):

@@ -17,26 +17,25 @@ class Tests(unittest.TestCase):
     def test_ingest_event_links(self):
 
         # Find HTML files in cached directory.
-        cached_html_dir = dir(Path('cached_html').rglob('*.html'))
+        cached_html_dir = Path('cached_html').rglob('*.html')
 
         with patch('requests.get') as mock_request:
-            text = ''
             for filename in cached_html_dir:
-                if 'event' in filename:
+                if 'event' in str(filename):
                     file_handle = open(filename, 'r')
                     text = file_handle.read()
-                    print(text)
+                    file_handle.close()
 
-            mock_request.return_value.status_code = 200
-            mock_request.return_value.text = text
+                    mock_request.return_value.status_code = 200
+                    mock_request.return_value.text = text
 
-            self.test_instance.ingest_event_links([''], refresh_html_cache=False)
+                    self.test_instance.ingest_event_links([''], refresh_html_cache=False)
 
 
     def test_ingest_calendar(self):
 
         # Find HTML files in cached directory.
-        cached_html_dir = dir(Path('cached_html').rglob('*.html'))
+        cached_html_dir = list(Path('cached_html').rglob('*.html'))
         
         # If the directory is empty then refresh the cache.
         refresh_html_cache = False
@@ -46,9 +45,10 @@ class Tests(unittest.TestCase):
         with patch('requests.get') as mock_request:
             text = ''
             for filename in cached_html_dir:
-                if 'calendar' in filename:
+                if 'calendar' in str(filename):
                     file_handle = open(filename, 'r')
                     text = file_handle.read()
+                    file_handle.close()
 
             mock_request.return_value.status_code = 200
             mock_request.return_value.text = text
