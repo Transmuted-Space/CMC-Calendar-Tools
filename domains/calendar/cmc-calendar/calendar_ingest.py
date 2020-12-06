@@ -10,7 +10,6 @@ from firebase_admin import credentials, firestore
 from configparser import ConfigParser
 from html.parser import HTMLParser
 from datetime import date
-from .event import Event
 
 
 class EventHTMLParser(HTMLParser):
@@ -58,11 +57,11 @@ class CalendarHTMLParser(HTMLParser):
 
     def __init__(self):
         super().__init__()
-        self.event_links = []
+        self.data = []
 
 
-    def get_event_links(self):
-        return self.event_links
+    def get_data(self):
+        return self.data
 
 
     def handle_starttag(self, tag, attrs):
@@ -71,8 +70,7 @@ class CalendarHTMLParser(HTMLParser):
             attr_dict = dict(attrs)
 
             if 'class' in attr_dict and attr_dict['class'] == 'calendarDayLink' and 'href' in attr_dict:
-                    self.event_links.append(attr_dict['href'])
-
+                    self.data.append(attr_dict['href'])
 
 
 class CalendarInjest:
@@ -92,8 +90,11 @@ class CalendarInjest:
         self.eventsBaseUri = self.config_parser['DEFAULT']['eventsBaseUri']
 
         # Load Firebase credentials and create client.
-        cred = credentials.Certificate('cmc-calendar-297516-firebase-adminsdk-mwugq-e33b3b9a7a.json')
-        firebase_admin.initialize_app(cred)
+
+        if not firebase_admin._apps:
+            cred = credentials.Certificate('cmc-calendar-297516-firebase-adminsdk-mwugq-e33b3b9a7a.json')
+            firebase_admin.initialize_app(cred)
+
         self.database = firestore.client()
 
 
@@ -112,29 +113,47 @@ class CalendarInjest:
         pass
 
 
-    def ingest_event_links(self, links, refresh_html_cache=False):
-        event_parser = EventHTMLParser()
+    def ingest_page(self, parser, link, refresh_html_cache=False):
+        parsed_data = []
 
-        for i, link in enumerate(links):
+        response = requests.get(link)
 
-            # Send HTTP request to URI.
-            response = requests.get(self.eventsBaseUri + link)
+        # Handle depending on the response code.
+        if response.status_code == 200:
 
-            # Handle depending on the response code.
-            if response.status_code == 200:
+            # Parse the page HTML.
+            parser.feed(response.text)
 
-                # Cache the response if specified.
-                if refresh_html_cache:
-                    with open('cached_html/event-{}-{}.html'.format(i, date.today()), 'w+') as file_handle:
-                        file_handle.write(response.text)
+            # Return the parsed data.
+            return parser.get_data(), response.text
 
-                # Parse the event page HTML.
-                event_parser.feed(response.text)
+        elif response.status_code == 404:
+            logging.error('URI not found: HTTP status code {}.'.format(response.status_code))
+        else:
+            logging.error('Unexpected response: HTTP status code {}.'.format(response.status_code))
 
-                data = event_parser.get_data()
-                # from pprint import pprint
-                # pprint(data)
-                self.database.collection('events').add(data)
+
+
+    def ingest_event_links(self, links, refresh_html_cache=False):        
+        for link in links: 
+
+            # Parse out the event ID from the URI suffix.
+            event_id = link.replace('/Calendar/EventDetails.aspx?ID=', '')
+
+            # Ingest each event HTML page.
+            parsed_data, raw_data = self.ingest_page(
+                EventHTMLParser(),
+                self.eventsBaseUri + link,
+                refresh_html_cache
+            )
+
+            # Cache the response if specified.
+            if refresh_html_cache:
+                with open('cached_html/event-{}.html'.format(event_id), 'w+') as file_handle:
+                    file_handle.write(raw_data)
+
+            parsed_data['ID'] = event_id
+            self.database.collection('events').add(parsed_data)
 
 
     def ingest_calendar(self, refresh_html_cache=False):
@@ -142,27 +161,17 @@ class CalendarInjest:
         This function will retrieve an HTML response from the URI and parse the DOM.
         '''
 
-        calendar_parser = CalendarHTMLParser()
+        # Ingest the calendar HTML page.
+        parsed_data, raw_data = self.ingest_page(
+            CalendarHTMLParser(),
+            self.calendarUri,
+            refresh_html_cache
+        )
 
-        # Send HTTP request to URI.
-        response = requests.get(self.calendarUri)
+        # Cache the response if specified.
+        if refresh_html_cache:
+            with open('cached_html/calendar-{}.html'.format(date.today()), 'w+') as file_handle:
+                file_handle.write(raw_data)
 
-        # Handle depending on the response code.
-        if response.status_code == 200:
-
-            # Feed the response HTML into the parser and parse.
-            calendar_parser.feed(response.text)
-
-            # Cache the response if specified.
-            if refresh_html_cache:
-                with open('cached_html/calendar-{}.html'.format(date.today()), 'w+') as file_handle:
-                    file_handle.write(response.text)
-
-            # Retrieve events list and parse them all.
-            event_links = calendar_parser.get_event_links()
-            self.ingest_event_links(event_links, refresh_html_cache=refresh_html_cache)
-
-        elif response.status_code == 404:
-            logging.error('URI not found: HTTP status code {}.'.format(response.status_code))
-        else:
-            logging.error('Unexpected response: HTTP status code {}.'.format(response.status_code))
+        # Retrieve events list and parse them all.
+        self.ingest_event_links(parsed_data, refresh_html_cache=refresh_html_cache)
