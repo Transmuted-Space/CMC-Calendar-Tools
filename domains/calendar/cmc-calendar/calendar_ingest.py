@@ -73,6 +73,27 @@ class CalendarHTMLParser(HTMLParser):
                     self.data.append(attr_dict['href'])
 
 
+class ListViewHTMLParser(HTMLParser):
+
+
+    def __init__(self):
+        super().__init__()
+        self.data = []
+
+
+    def get_data(self):
+        return self.data
+
+
+    def handle_starttag(self, tag, attrs):
+
+        if tag == 'a':
+            attr_dict = dict(attrs)
+
+            if 'hreft' in attr_dict and 'EventDeatils.aspx?ID=' in attr_dict['href']:
+                    self.data.append(attr_dict['href'])
+
+
 class CalendarInjest:
     '''
     Class encapsulation and functionality for interacting with the calendar API.
@@ -163,7 +184,7 @@ class CalendarInjest:
 
         # Ingest the calendar HTML page.
         parsed_data, raw_data = self.ingest_page(
-            CalendarHTMLParser(),
+            ListViewHTMLParser(),
             self.calendarUri,
             refresh_html_cache
         )
