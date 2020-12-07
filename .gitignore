@@ -12,3 +12,9 @@ node_modules/
 # Python
 *.pyc
 __pycache__
+
+# Firebase Keys
+cmc-calendar-297516-firebase-adminsdk-mwugq-e33b3b9a7a.json
+
+# Log files
+*.log
