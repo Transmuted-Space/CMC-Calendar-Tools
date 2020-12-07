@@ -4,14 +4,14 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 import requests
-from .calendar_ingest import CalendarInjest
+from .calendar_ingest import CalendarIngest
 
 
 class Tests(unittest.TestCase):
 
 
     def setUp(self):
-        self.test_instance = CalendarInjest()
+        self.test_instance = CalendarIngest()
 
 
     def test_ingest_event_links(self):
