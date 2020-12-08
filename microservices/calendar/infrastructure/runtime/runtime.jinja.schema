@@ -1,0 +1,9 @@
+imports:
+  - path: functions/ingest.jinja
+  - path: scheduler.jinja
+
+properties:
+  artifactsBucket:
+    type: string
+    description: |
+      The name of the bucket that contains the source code for the Cloud Function

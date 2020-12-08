@@ -1,0 +1,28 @@
+resources:
+  - name: ${_MICROSERVICE}-cloudbuild-deploy-python
+    type: https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-foundation-toolkit/master/dm/templates/cloudbuild/cloudbuild.py
+    properties:
+      steps:
+        - id: test-unit
+          name: gcr.io/${PROJECT_ID}/pipenv
+          args:
+            - python -m unittest
+            - microservices/${_MICROSERVICE}/**/tests.py
+        - id: artifact
+          name: gcr.io/${PROJECT_ID}/artifact-uploader
+          entrypoint: bash
+          args:
+            - -c
+            - |
+              cp Pipfile* microservices/${_MICROSERVICE}/
+              cd microservices/${_MICROSERVICE}/
+              zip -r /tmp/${_MICROSERVICE}.zip .
+              gsutil cp /tmp/${_MICROSERVICE}.zip gs://${_ARTIFACTS_BUCKET}/
+        - id: deploy
+          name: gcr.io/cloud-builders/gcloud
+          args:
+            - deployment-manager
+            - deployments update
+            - ${_MICROSERVICE}-microservice
+            - --template=microservices/${_MICROSERVICE}/infrastructure/runtime/runtime.jinja
+            - --properties=artifactsBucket:${_ARTIFACTS_BUCKET}

@@ -8,6 +8,7 @@ requests = "*"
 firebase-admin = "*"
 
 [dev-packages]
+functions-framework = "*"
 
 [requires]
 python_version = "3.8"

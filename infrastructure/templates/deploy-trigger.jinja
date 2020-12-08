@@ -1,17 +1,13 @@
-imports:
-  - path: https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-foundation-toolkit/v0.3.4/dm/templates/cloudbuild/trigger.py
-    name: cloudbuild-trigger.py
-
 resources:
   - name: {{ properties['microservice'] }}-deploy-trigger
-    type: cloudbuild-trigger.py
+    type: https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-foundation-toolkit/master/dm/templates/cloudbuild/trigger.py
     properties:
       description: Trigger CloudBuild to deploy {{ properties['microservice'] }} infrastructure when changes are pushed to master
       triggerTemplate:
         repoName: cmc-calendar-tools
         branchName: master
-        dir: microservices/{{ properties['microservice'] }}
-      build_template: infrastructure/cloudbuild/deploy-{{ properties['language'] }}.yml
+      includedFiles: microservices/{{ properties['microservice'] }}/**
+      filename: infrastructure/cloudbuild/deploy/{{ properties['language'] }}.yml
       substitutions:
         _MICROSERVICE: {{ properties['microservice'] }}
         _ARTIFACTS_BUCKET: {{ properties['artifactsBucket'] }}

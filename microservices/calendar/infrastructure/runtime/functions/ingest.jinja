@@ -4,7 +4,7 @@ resources:
     properties:
       parent: projects/{{ env['project'] }}/locations/{{ properties['region'] }}
       function: calendar-ingest
-      sourceArchiveUrl: gs://{{ properties['artifactsBucket'] }}/calendar.tar.gz
+      sourceArchiveUrl: gs://{{ properties['artifactsBucket'] }}/calendar.zip
       entryPoint: ingest
       runtime: python38
       eventTrigger:
