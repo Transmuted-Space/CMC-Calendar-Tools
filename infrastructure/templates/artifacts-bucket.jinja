@@ -1,0 +1,22 @@
+resources:
+  - name: {{ properties['name'] }}
+    type: gcp-types/storage-v1:buckets
+    properties:
+      name: {{ properties['name'] }}
+      predefinedAcl: projectPrivate
+      projection: full
+      location: US
+      storageClass: STANDARD
+      lifecycle:
+        rule:
+          - action:
+            type: Delete
+            condition:
+              isLive: false
+              numNewerVersions: 3
+      versioning:
+        enabled: true
+
+outputs:
+  - name: bucketName
+    value: $(ref.{{ properties['name'] }}.name)

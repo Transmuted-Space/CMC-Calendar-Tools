@@ -1,19 +1,6 @@
 {
   "private": "true",
   "license": "UNLICENSED",
-  "husky": {
-    "hooks": {
-      "pre-commit": "./precommit.sh"
-    }
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "none",
-    "bracketSpacing": true,
-    "proseWrap": "always",
-    "printWidth": 80
-  },
   "dependencies": {
     "@google-cloud/kms": "^2.1.3",
     "cors": "^2.8.5",

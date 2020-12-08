@@ -1,0 +1,10 @@
+resources:
+  - name: calendar-ingest-scheduler
+    type: gcp-types/cloudscheduler-v1:projects.locations.jobs
+    properties:
+      parent: projects/{{ env['project'] }}/locations/{{ properties['region'] }}
+      description: Trigger the CMC calendar ingest function
+      schedule: "0 2 * * *"
+      timeZone: US/Mountain
+      pubsubTarget:
+        topicName: projects/{{ env['project'] }}/topics/calendar-ingest-topic
