@@ -1,4 +1,4 @@
 {
-  "extends": "./mocha.json",
+  "extends": "./mocha/mocha.json",
   "require": ["./mocha/mocha.unit.ts"]
 }

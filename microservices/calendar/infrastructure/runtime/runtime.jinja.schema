@@ -1,5 +1,5 @@
 imports:
-  - path: function.jinja
+  - path: functions/ingest.jinja
   - path: scheduler.jinja
 
 properties:

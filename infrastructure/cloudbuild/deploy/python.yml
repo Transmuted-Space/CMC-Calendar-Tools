@@ -9,7 +9,7 @@ resources:
             - python -m unittest
             - microservices/${_MICROSERVICE}/**/tests.py
         - id: artifact
-          name: gcr.io/${PROJECT_ID}/cloud-sdk
+          name: gcr.io/${PROJECT_ID}/artifact-uploader
           entrypoint: bash
           args:
             - -c

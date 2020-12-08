@@ -6,8 +6,8 @@ resources:
       triggerTemplate:
         repoName: cmc-calendar-tools
         branchName: master
-        dir: microservices/{{ properties['microservice'] }}
-      filename: infrastructure/cloudbuild/deploy-{{ properties['language'] }}.yml
+      includedFiles: microservices/{{ properties['microservice'] }}/**
+      filename: infrastructure/cloudbuild/deploy/{{ properties['language'] }}.yml
       substitutions:
         _MICROSERVICE: {{ properties['microservice'] }}
         _ARTIFACTS_BUCKET: {{ properties['artifactsBucket'] }}

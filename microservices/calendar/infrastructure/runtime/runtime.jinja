@@ -1,6 +1,6 @@
 resources:
   - name: ingest-function
-    type: function.jinja
+    type: functions/ingest.jinja
     properties:
       region: us-central1
       artifactsBucket: {{ properties['artifactsBucket'] }}
