@@ -4,7 +4,7 @@ resources:
     properties:
       parent: projects/{{ env['project'] }}/locations/{{ properties['region'] }}
       description: Trigger the CMC calendar ingest function
-      schedule: "0 2 * * *"
+      schedule: "0 20 * * *"
       timeZone: US/Mountain
       pubsubTarget:
         topicName: projects/{{ env['project'] }}/topics/calendar-ingest-topic

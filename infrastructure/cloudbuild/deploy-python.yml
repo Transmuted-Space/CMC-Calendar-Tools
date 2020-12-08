@@ -10,10 +10,8 @@ resources:
         - id: test-unit
           name: gcr.io/${PROJECT_ID}/pipenv
           args:
-            [
-              python -m unittest,
-              microservices/${_MICROSERVICE}/**/tests.py
-            ]
+            - python -m unittest
+            - microservices/${_MICROSERVICE}/**/tests.py
         - id: artifact
           name: gcr.io/${PROJECT_ID}/cloud-sdk
           entrypoint: bash

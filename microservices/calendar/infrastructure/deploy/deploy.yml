@@ -1,0 +1,17 @@
+imports:
+  - name: artifacts-bucket.jinja
+    path: ../../../../infrastructure/templates/artifacts-bucket.jinja
+  - name: deploy-trigger.jinja
+    path: ../../../../infrastructure/templates/deploy-trigger.jinja
+
+resources:
+  - name: artifacts-bucket
+    type: artifacts-bucket.jinja
+    properties:
+      name: calendar-artifacts
+  - name: deploy-trigger
+    type: deploy-trigger.jinja
+    properties:
+      microservice: calendar
+      language: python
+      artifactsBucket: $(ref.artifacts-bucket.bucketName)

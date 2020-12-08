@@ -1,16 +1,16 @@
 imports:
-  - path: ./ingest.jinja
-    name: ingest-function
-  - path: ./scheduler.jinja
-    name: ingest-scheduler
+  - name: ingest-function.jinja
+    path: ./ingest.jinja
+  - name: ingest-scheduler.jinja
+    path: ./scheduler.jinja
 
 resources:
   - name: ingest-function
-    type: ingest-function
+    type: ingest-function.jinja
     properties:
       region: us-central1
       artifactsBucket: {{ properties['artifactsBucket'] }}
   - name: ingest-scheduler
-    type: ingest-scheduler
+    type: ingest-scheduler.jinja
     properties:
       region: us-central1
