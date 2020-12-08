@@ -1,12 +1,15 @@
 #!/bin/sh
+echo
+echo "Functions manifest:"
+echo "microservices/calendar.ingest: event trigger, calendar-ingest-topic"
+echo
+echo
 
-# TODO use this instead of a credsfile: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
+npx concurrently -k \
+  "gcloud beta emulators firestore start" \
+  "gcloud beta emulators pubsub start" \
+  "sleep 10 && $(gcloud beta emulators pubsub env-init)" \
+  "pipenv run functions-framework --source=microservices/calendar --target=ingest --signature-type=event --debug"
 
-# TODO implement this
-# used by mocha/mocha.integration.ts as a default test target
-export FUNCTIONS_FRAMEWORK_ENDPOINT="http://localhost:${port}"
-
-# TODO run tsc with tsc-watch and restart functions-framework on emit
-npx functions-framework --source=.build/functions --target=${function} --port=${port}
-
-pipenv run
+# TODO TypeScript functions: run tsc with tsc-watch and restart functions-framework on emit
+# npx functions-framework --source=microservices/???/.build --target=${function} --port=${port}
