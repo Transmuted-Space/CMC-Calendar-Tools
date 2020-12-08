@@ -4,7 +4,8 @@ resources:
     properties:
       parent: projects/{{ env['project'] }}/locations/{{ properties['region'] }}
       description: Trigger the CMC calendar ingest function
-      schedule: "0 20 * * *"
+      schedule: "0 23 * * *"
       timeZone: US/Mountain
       pubsubTarget:
         topicName: projects/{{ env['project'] }}/topics/calendar-ingest-topic
+        data: cGluZw== # base64 "ping"; we have to send "something"

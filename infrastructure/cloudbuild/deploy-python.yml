@@ -1,10 +1,6 @@
-imports:
-  - path: https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-foundation-toolkit/v0.3.4/dm/templates/cloudbuild/cloudbuild.py
-    name: cloudbuild
-
 resources:
   - name: ${_MICROSERVICE}-cloudbuild-deploy-python
-    type: cloudbuild
+    type: https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-foundation-toolkit/master/dm/templates/cloudbuild/cloudbuild.py
     properties:
       steps:
         - id: test-unit
@@ -19,13 +15,14 @@ resources:
             - -c
             - |
               cp Pipfile* microservices/${_MICROSERVICE}/
-              tar czvf /tmp/${_MICROSERVICE}.tar.gz microservices/${_MICROSERVICE}/
-              gsutil cp /tmp/${_MICROSERVICE}.tar.gz gs://{{ properties['artifactBucket'] }}/
+              cd microservices/${_MICROSERVICE}/
+              zip -r /tmp/${_MICROSERVICE}.zip .
+              gsutil cp /tmp/${_MICROSERVICE}.zip gs://${_ARTIFACTS_BUCKET}/
         - id: deploy
           name: gcr.io/cloud-builders/gcloud
           args:
             - deployment-manager
             - deployments update
             - ${_MICROSERVICE}-microservice
-            - --template=microservices/${_MICROSERVICE}/infrastructure/runtime/index.jinja
+            - --template=microservices/${_MICROSERVICE}/infrastructure/runtime/runtime.jinja
             - --properties=artifactsBucket:${_ARTIFACTS_BUCKET}
