@@ -1,0 +1,14 @@
+imports:
+  - path: ingest/function.jinja
+  - path: ingest/scheduler.jinja
+
+resources:
+  - name: ingest-function
+    type: ingest/function.jinja
+    properties:
+      region: us-central1
+      artifactsBucket: calendar-artifacts
+  - name: ingest-scheduler
+    type: ingest/scheduler.jinja
+    properties:
+      region: us-central1

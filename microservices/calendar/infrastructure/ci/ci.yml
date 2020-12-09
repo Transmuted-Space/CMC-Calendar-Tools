@@ -12,6 +12,7 @@ resources:
   - name: deploy-trigger
     type: deploy-trigger.jinja
     properties:
+      repoName: cmc-calendar-tools
       microservice: calendar
       language: python
       artifactsBucket: $(ref.artifacts-bucket.bucketName)

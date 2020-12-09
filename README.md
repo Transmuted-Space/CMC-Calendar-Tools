@@ -3,6 +3,9 @@
 Google Cloud Platform project that provides some nice utilities for the CMC
 calendar, such as interest-based email notifications and Google Calendar export.
 
+This project is patterned after
+[template-microservices-monorepo](https://github.com/wild-surmise/template-microservices-monorepo).
+
 ## Table of Contents
 
 - [Roadmap](#roadmap)
@@ -10,7 +13,7 @@ calendar, such as interest-based email notifications and Google Calendar export.
 - [Development Setup](#development-setup)
 - [Running Locally](#running-locally)
 - [Testing](#testing)
-- [Deploying to a new GCP Project](#deploying-from-scratch)
+- [Deploying](#deploying)
 
 ## Roadmap
 
@@ -24,25 +27,43 @@ for a high-level view of the cloud infrastructure and dependency graph.
 
 ## Development Setup
 
-1. Install `Python 3.8`
-2. `pip install pipenv`
-3. [Install `nvm` and `v12.x` of Node](https://github.com/nvm-sh/nvm#installing-and-updating)
-4. [Install a JDK](https://www.oracle.com/java/technologies/javase-downloads.html)
-   ([required](https://cloud.google.com/pubsub/docs/emulator#prereq) to emulate
-   **Pub/Sub** locally 😞)
-5. [Install `gcloud`](https://cloud.google.com/sdk/docs/install)
-6. Configure `gcloud`:
+Clone and navigate to the project in your shell.
+
+### `gcloud` Setup
+
+1. [Install `gcloud`](https://cloud.google.com/sdk/docs/install)
+2. Configure `gcloud`:
+   - `gcloud components install beta`
+   - `gcloud components update`
    - `gcloud config configurations create {project-name}`
    - `gcloud config set project {project-id}`
-   - `gcloud components install beta cloud-firestore-emulator pubsub-emulator`
-   - `gcloud components update`
    - `gcloud auth login`
      - login to run `gcloud` project management commands
    - `gcloud auth application-default login`
      - login again to give locally-run **Cloud Functions** necessary credentials
-7. Clone and navigate to the project in your shell
-8. `pipenv install --dev`
-9. `npm i`
+
+### Node Setup
+
+1. [Install `nvm`](https://github.com/nvm-sh/nvm#installing-and-updating) and a
+   [gcloud-compatible version of Node](https://cloud.google.com/functions/docs/concepts/nodejs-runtime)
+2. `npm i`
+
+### Python Setup
+
+1. Install `Python 3.8`
+2. `pip install pipenv`
+3. `pipenv install --dev`
+
+### Firestore Setup
+
+1. `gcloud components install cloud-firestore-emulator`
+
+### Pub/Sub Setup
+
+1. `gcloud components install pubsub-emulator`
+2. [Install a JDK](https://www.oracle.com/java/technologies/javase-downloads.html)
+   ([required](https://cloud.google.com/pubsub/docs/emulator#prereq) to emulate
+   **Pub/Sub** locally 😞)
 
 ## Running Locally: `start.sh`
 
@@ -91,7 +112,24 @@ Unit tests are colocated with the code they test.
 
 **TODO**
 
-## Deploying to a new GCP Project
+## Deploying
+
+### Updating a single CI stack
+
+Use
+[`gcloud deployment-manager deployments update`](https://cloud.google.com/sdk/gcloud/reference/deployment-manager/deployments/update).
+
+### Deploying a single runtime stack
+
+You should not have to do this for existing microservices - runtime
+infrastructure is automatically updated by the code change trigger.
+
+New microservices will reqiure an initial deploy. Use
+[`gcloud deployment-manager deployments create`](https://cloud.google.com/sdk/gcloud/reference/deployment-manager/deployments/create)
+to create both the deployment stack and the runtime stack. See existing
+microservices for infrastructure examples.
+
+### Deploying to a new GCP Project
 
 This entire project stack can be deployed in a brand-new Google Cloud Platform
 project with the following steps:

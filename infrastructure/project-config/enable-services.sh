@@ -1,4 +1,5 @@
 #!/bin/sh
+
 gcloud services enable \
   deploymentmanager.googleapis.com, \
   cloudbuild.googleapis.com, \

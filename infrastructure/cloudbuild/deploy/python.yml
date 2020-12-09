@@ -24,5 +24,4 @@ resources:
             - deployment-manager
             - deployments update
             - ${_MICROSERVICE}-microservice
-            - --template=microservices/${_MICROSERVICE}/infrastructure/runtime/runtime.jinja
-            - --properties=artifactsBucket:${_ARTIFACTS_BUCKET}
+            - --config=microservices/${_MICROSERVICE}/infrastructure/runtime/runtime.yml

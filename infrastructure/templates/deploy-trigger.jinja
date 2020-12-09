@@ -4,7 +4,7 @@ resources:
     properties:
       description: Trigger CloudBuild to deploy {{ properties['microservice'] }} infrastructure when changes are pushed to master
       triggerTemplate:
-        repoName: cmc-calendar-tools
+        repoName: {{ properties['repoName'] }}
         branchName: master
       includedFiles: microservices/{{ properties['microservice'] }}/**
       filename: infrastructure/cloudbuild/deploy/{{ properties['language'] }}.yml
