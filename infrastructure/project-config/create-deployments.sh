@@ -33,12 +33,12 @@ for microservice_dir in microservices/*; do
   microservice=${microservice##*/}
 
   if [ "${1}" == "--preview" ]; then
-    echo "gcloud deployment-manager deployments create ${microservice}-deploy \\
-  --config=microservices/${microservice}/infrastructure/ci/ci.yml \\
+    echo "gcloud deployment-manager deployments create ${microservice}-cd \\
+  --config=microservices/${microservice}/infrastructure/cd/cd.yml \\
   --preview"
     if [ "${2}" != "--dry-run" ]; then
-      gcloud deployment-manager deployments create ${microservice}-ci \
-        --config=microservices/${microservice}/infrastructure/ci/ci.yml \
+      gcloud deployment-manager deployments create ${microservice}-cd \
+        --config=microservices/${microservice}/infrastructure/cd/cd.yml \
         --preview
     fi
     echo "gcloud deployment-manager deployments create ${microservice}-microservice \\
@@ -51,9 +51,9 @@ for microservice_dir in microservices/*; do
     fi
 
   elif [ "${1}" == "--commit" ]; then
-    echo "gcloud deployment-manager deployments update ${microservice}-ci"
+    echo "gcloud deployment-manager deployments update ${microservice}-cd"
     if [ "${2}" != "--dry-run" ]; then
-      gcloud deployment-manager deployments update ${microservice}-ci
+      gcloud deployment-manager deployments update ${microservice}-cd
     fi
     echo "gcloud deployment-manager deployments update ${microservice}-microservice"
     if [ "${2}" != "--dry-run" ]; then
@@ -61,9 +61,9 @@ for microservice_dir in microservices/*; do
     fi
 
   elif [ "${1}" == "--cancel" ]; then
-    echo "gcloud deployment-manager deployments cancel-preview ${microservice}-ci"
+    echo "gcloud deployment-manager deployments cancel-preview ${microservice}-cd"
     if [ "${2}" != "--dry-run" ]; then
-      gcloud deployment-manager deployments cancel-preview ${microservice}-ci
+      gcloud deployment-manager deployments cancel-preview ${microservice}-cd
     fi
     echo "gcloud deployment-manager deployments cancel-preview ${microservice}-microservice"
     if [ "${2}" != "--dry-run" ]; then

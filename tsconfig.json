@@ -1,14 +1,9 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noEmitOnError": true,
-    "pretty": true,
-    "module": "system",
-    "moduleResolution": "node",
-    "target": "es2017",
-    "lib": ["es2017"]
-  }
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "proseWrap": "always",
+  "printWidth": 80
 }
