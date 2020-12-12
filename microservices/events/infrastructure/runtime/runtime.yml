@@ -7,7 +7,7 @@ resources:
     type: ingest/function.jinja
     properties:
       region: us-central1
-      artifactsBucket: calendar-artifacts
+      artifactsBucket: events-artifacts
   - name: ingest-scheduler
     type: ingest/scheduler.jinja
     properties:

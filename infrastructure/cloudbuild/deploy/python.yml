@@ -1,6 +1,6 @@
 resources:
   - name: ${_MICROSERVICE}-cloudbuild-deploy-python
-    type: https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-foundation-toolkit/master/dm/templates/cloudbuild/cloudbuild.py
+    type: gcp-types/cloudbuild-v1
     properties:
       steps:
         - id: test-unit
@@ -8,13 +8,20 @@ resources:
           args:
             - python -m unittest
             - microservices/${_MICROSERVICE}/**/tests.py
+        - id: prepare
+          name: gcr.io/${PROJECT_ID}/pipenv
+          entrypoint: bash
+          args:
+            - -c
+            - |
+              pipenv lock -r > requirements.txt
+              cp requirements.txt microservices/${_MICROSERVICE}/
         - id: artifact
           name: gcr.io/${PROJECT_ID}/artifact-uploader
           entrypoint: bash
           args:
             - -c
             - |
-              cp Pipfile* microservices/${_MICROSERVICE}/
               cd microservices/${_MICROSERVICE}/
               zip -r /tmp/${_MICROSERVICE}.zip .
               gsutil cp /tmp/${_MICROSERVICE}.zip gs://${_ARTIFACTS_BUCKET}/
@@ -23,5 +30,5 @@ resources:
           args:
             - deployment-manager
             - deployments update
-            - ${_MICROSERVICE}-microservice
+            - ${_MICROSERVICE}-runtime
             - --config=microservices/${_MICROSERVICE}/infrastructure/runtime/runtime.yml

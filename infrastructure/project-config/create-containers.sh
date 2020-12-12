@@ -1,23 +1,43 @@
 #!/bin/sh
-# SYNOPSIS: ./create-containers.sh [--dry-run|--commit]
 #
-# If --dry-run is specified or no option is given, the commands to be run will
-# be emitted to the console, but no `gcloud` commands will actually be executed.
-# If --commit is specified, containers will be created.
+# Creates containers by calling `gcloud builds submit` for each directory in
+# `/infrastructure/containers/`.
 #
-# This command does not do actual option parsing. Options other than the first
-# parameter will not be recognized. There are no shorthands.
+# SYNOPSIS: ./create-containers.sh
+#
+# This script prints the commands to be run to the console for preview and
+# issues a prompt before continuing.
+#
 set -e
 
 project_config_dir=$(dirname $(type -p ${0}))
 containers_dir="${project_config_dir}/../containers"
 project_id=$(gcloud config get-value project | sed -n 1p)
 
+count="0"
 for container_dir in ${containers_dir}/*; do
-  container_dir=${container_dir%*/}
-  container=${container_dir##*/}
-  echo "gcloud builds submit --tag gcr.io/${project_id}/${container}"
-  if [ "${1}" == "--commit" ]; then
-    gcloud builds sumbit --tag gcr.io/${project_id}/${container}
+  if [ -d "${container_dir}" ]; then
+    count=$(expr ${count} + 1)
+    container_dir=${container_dir%*/}
+    container=${container_dir##*/}
+    echo "gcloud builds submit --tag gcr.io/${project_id}/${container}"
   fi
 done
+
+
+if [ "${count}" -gt "0" ]; then
+  read -p "The commands above will be executed. Continue? [y/N]: " approve
+else
+  echo "No deployments found. Exiting"
+  exit 1
+fi
+
+if echo "${approve}" | grep -iqF "y"; then
+  for container_dir in ${containers_dir}/*; do
+    if [ -d container_dir ]; then
+      container_dir=${container_dir%*/}
+      container=${container_dir##*/}
+      gcloud builds sumbit --tag gcr.io/${project_id}/${container}
+    fi
+  done
+fi

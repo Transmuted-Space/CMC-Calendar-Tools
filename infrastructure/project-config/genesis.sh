@@ -1,7 +1,7 @@
 #!/bin/sh
+project_config_dir=$(dirname $(type -p ${0}))
+${project_config_dir}/enable-services.sh
+${project_config_dir}/create-containers.sh --commit
 set -e
-
-./enable-services.sh
-./create-containers.sh --commit
-./create-deployments.sh --preview
-./create-deployments.sh --commit
+${project_config_dir}/create-deployments.sh --preview
+${project_config_dir}/create-deployments.sh --commit

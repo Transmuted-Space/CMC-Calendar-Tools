@@ -13,6 +13,10 @@ node_modules/
 *.pyc
 __pycache__
 
+# generated only during deployment testing
+requirements.txt
+microservices/*/package*.json
+
 # Firebase Keys
 *firebase-adminsdk*.json
 

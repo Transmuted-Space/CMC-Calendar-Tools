@@ -8,11 +8,11 @@ resources:
   - name: artifacts-bucket
     type: artifacts-bucket.jinja
     properties:
-      name: calendar-artifacts
+      name: events-artifacts
   - name: deploy-trigger
     type: deploy-trigger.jinja
     properties:
       repoName: cmc-calendar-tools
-      microservice: calendar
+      microservice: events
       language: python
       artifactsBucket: $(ref.artifacts-bucket.bucketName)
