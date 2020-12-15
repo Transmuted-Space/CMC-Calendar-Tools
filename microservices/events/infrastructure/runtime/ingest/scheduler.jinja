@@ -1,11 +1,11 @@
 resources:
-  - name: calendar-ingest-scheduler
+  - name: events-ingest-scheduler
     type: gcp-types/cloudscheduler-v1:projects.locations.jobs
     properties:
       parent: projects/{{ env['project'] }}/locations/{{ properties['region'] }}
-      description: Trigger the CMC calendar ingest function
+      description: Trigger the CMC events ingest function
       schedule: "0 23 * * *"
       timeZone: US/Mountain
       pubsubTarget:
-        topicName: projects/{{ env['project'] }}/topics/calendar-ingest-topic
+        topicName: projects/{{ env['project'] }}/topics/events-ingest-topic
         data: cGluZw== # base64 "ping"; we have to send "something"

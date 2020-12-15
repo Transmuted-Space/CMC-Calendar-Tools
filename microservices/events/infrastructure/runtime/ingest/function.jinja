@@ -1,16 +1,16 @@
 resources:
-  - name: calendar-ingest-function
+  - name: events-ingest-function
     type: gcp-types/cloudfunctions-v1:projects.locations.functions
     properties:
       parent: projects/{{ env['project'] }}/locations/{{ properties['region'] }}
-      function: calendar-ingest
-      sourceArchiveUrl: gs://{{ properties['artifactsBucket'] }}/calendar.zip
+      function: events-ingest
+      sourceArchiveUrl: gs://{{ properties['artifactsBucket'] }}/events.zip
       entryPoint: ingest
       runtime: python38
       eventTrigger:
-        resource: $(ref.calendar-ingest-topic.name)
+        resource: $(ref.events-ingest-topic.name)
         eventType: providers/cloud.pubsub/eventTypes/topic.publish
   - type: gcp-types/pubsub-v1:projects.topics
-    name: calendar-ingest-topic
+    name: events-ingest-topic
     properties:
-      topic: calendar-ingest
+      topic: events-ingest
