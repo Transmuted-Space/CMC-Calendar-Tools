@@ -1,3 +1,5 @@
+from html.parser import HTMLParser
+
 class ListViewHTMLParser(HTMLParser):
 
 
