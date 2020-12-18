@@ -1,3 +1,4 @@
+from html.parser import HTMLParser
 
 class EventHTMLParser(HTMLParser):
 
@@ -31,7 +32,7 @@ class EventHTMLParser(HTMLParser):
         if tag == 'span':
             attr_dict = dict(attrs)
             if 'id' in attr_dict and 'EventDetails_lbl' in attr_dict['id']:
-                
+
                 # Parse out label name.
                 label = attr_dict['id'].replace('EventDetails_lbl', '')
                 self.label = label.replace('dnn_ctr781_', '')

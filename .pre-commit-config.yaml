@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: master
+    hooks:
+      - id: black
+        entry: bash -c 'black "$@" && git add -u' --
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        language: node
+        types: [text]
+        entry: pretty-quick --staged
+        additional_dependencies:
+          [
+            'prettier@latest',
+            'pretty-quick@latest',
+            '@wild-surmise/prettierrc@latest'
+          ]
